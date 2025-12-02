@@ -46,11 +46,11 @@ init_shards_repl_set () {
 	for sh in $(seq $shard_count)
 	do
 		port=$(($port + 1))
-		mongo admin --port "${port}" --eval "rs.initiate();"
+		mongosh admin --port "${port}" --eval "rs.initiate();"
 	        for rs in $(seq $replica_count)
 	        do
 			local next_port=$(($port + $rs));
-			mongo admin --port "${port}" --eval "rs.add('localhost:${next_port}');"
+			mongosh admin --port "${port}" --eval "rs.add('localhost:${next_port}');"
 	        done
 		port=$(($port + $replica_count))
 	done
@@ -80,12 +80,12 @@ init_config_repl_set () {
 	printf "\n=== init config replica set ===\n"
 	local port=$(($1 + 1))
 	local config_count=$((($2 - 1)))
-	mongo admin --port "${port}" --eval "rs.initiate();"
+	mongosh admin --port "${port}" --eval "rs.initiate();"
 
 	for cfg in $(seq $config_count)
 	do
 		local next_port=$(($port + $cfg));
-        	mongo admin --port "${port}" --eval "rs.add('localhost:${next_port}');"
+        	mongosh admin --port "${port}" --eval "rs.add('localhost:${next_port}');"
 	done
 }
 
@@ -125,13 +125,13 @@ init_mongos_shards () {
 		rs_db="${rs_db:0:${#rs_db}-1}"
 	        rs_db="rs${sh}/${rs_db}"
 		echo "${rs_db}"
-		mongo admin --port $mongos_port --eval "sh.addShard('${rs_db}')"
+		mongosh admin --port $mongos_port --eval "sh.addShard('${rs_db}')"
         done
 }
 
 
 fill_test_shard_collection () {
-	mongo --port $mongos_port ./fill_test_collection.js
+	mongosh --port $mongos_port ./fill_test_collection.js
 }
 
 

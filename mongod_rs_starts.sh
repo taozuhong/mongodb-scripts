@@ -40,11 +40,11 @@ done
 printf "\n=== init replica set ===\n"
 port=$(($2 + 1))
 replica_count=$(($1 - 1))
-mongo admin --port "${port}" --eval "rs.initiate();"
+mongosh admin --port "${port}" --eval "rs.initiate();"
 for rs in $(seq $replica_count)
 do
 	next_port=$(($port + $rs))
-	mongo admin --port "${port}" --eval "rs.add('localhost:${next_port}');"
+	mongosh admin --port "${port}" --eval "rs.add('localhost:${next_port}');"
 done
 
 printf "\nmongod in replica set started :-)"
